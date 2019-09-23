@@ -1,6 +1,6 @@
 ---
 title: 'Bio 201: Lab 3 tidy data'
-author: "Kristi Gdanetz MacCready"
+author: "Karan Nayak"
 date: "9/23/2019"
 output: html_document
 ---
@@ -51,7 +51,7 @@ The abbreviated output above gives the first several columns and the first ten r
 
 ```{r}
 # remove import data frame from global environment 
-rm(scfa_wkly)
+rm(SCFA_wkly)
 ```
 
 ### Import with excel files
@@ -77,13 +77,13 @@ Yay, finally! Let’s dig into the data to think about how we’d like to use it
 The functions below can provide useful information about a data frame. Run each on the data frame `scfa_indv`, and read the help pages if necessary. In the comments briefly describe what each function tells you about the data frame. 
 
 ```{r eval=FALSE, include=FALSE}
-nrow() #
-ncol() #
-dim() #
-colnames() #
-rownames() #
-glimpse() #
-str() #
+nrow() # 4078 Number of rows 
+ncol() # 19 Number of columns
+dim() # 4078   19  Number of rows and columns 
+colnames() # This tells you the names of all the columns 
+rownames() # This tells you the row numbers up until 1000. 3078 entries are omitted 
+glimpse() # This tels you the values in each column along with their data types. There are 4,078 observations and 19 variables. Shows as much data as possible.
+str() # Displays the internal structure of the R object. Tells you the values in each column along with their data types. It displays abbreviated contents of lists.
 ```
 
 ### Column names
@@ -239,6 +239,12 @@ Some may find it helpful to read the pipe like the word “then”. For instance
 Filter the scfa_indv data frame for data from Fall 2018, only include study weeks 1 and 3, subset for BRMPS, drop any samples that do not meet the freeze time limits, or are not within the weight range. Keep columns with participant and sample data and butyrate measurements. 
 ```{r}
 f18_but_rps <- scfa_indv %>%
+  
+  filter(study_week == "week1" | study_week == "week3") %>%
+  filter(semester == "Fall2018") %>%
+  filter(supplement_consumed == "BRMPS") %>%
+  filter(sample_wt_g >= 0.10 & sample_wt_g <= 1) %>%
+  filter(notes != "frozen >24hrs")
 ```
 
 
@@ -279,6 +285,11 @@ Do the following as one long series of commands using pipes:
 
 ```{r}
 scfa_indv_qc <- scfa_indv %>%
+  rename_all(tolower) %>%
+  rename(race_ethnicity = "race/ethnicity") %>%
+  mutate (wt_kgs = wt_lbs / 2.205 
+          ht_m = ht_in / 35.274)
+  
 ```
 
 Swap your code with your neighbor, does their code run on your computer? Are the outputs the same?
