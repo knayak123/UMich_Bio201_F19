@@ -334,13 +334,26 @@ Import the scfa_wkly data from the Excel file. Complete the following QC measure
 * Calculate the mean and median total SCFAs
 
 ```{r}
-scfa_wkly_qc <- read_excel() %>%
+scfa_wkly_qc <- read_excel(path = "raw_data/SCFA_data.xlsx", 
+                           sheet = "SCFA_indv", 
+                           col_names = TRUE, 
+                           trim_ws = TRUE, 
+                           na = c("", "NA", "-----")) %>%
 
+  rename_all(tolower) %>%
+  rename(race_ethnicity = "race/ethnicity") %>%
+  filter(study_week == "week1" | study_week == "week3") %>%
+  filter(quantity_compliant == "yes") %>%
+  mutate(total_scfa = ace + but + pro) %>%
+ 
+  mutate(total_scfa_mean = mean(total_scfa))  %>%
+  mutate(total_scfa_median = median(total_scfa))
+  
 ```
 
 Export this curated data frame:
 ```{r}
-write_delim()
+write_delim(scfa_wkly_qc, path = "raw_data/SCFA_data.xlsx", delim = "\t")
 ```
 
 
